@@ -1,9 +1,7 @@
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:isar/isar.dart';
-import 'package:test02/contacts_screen.dart';
-import 'package:test02/home_screen.dart';
+import 'package:test02/otp_verification.dart';
 
 class InputPhoneNumber extends StatefulWidget {
   const InputPhoneNumber({super.key});
@@ -109,7 +107,7 @@ class _InputPhoneNumberState extends State<InputPhoneNumber> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 11,right: 11),
-                              child: Container(
+                              child: SizedBox(
                                   width: 24,
                                   height: 24,
                                   ///bo góc ảnh
@@ -167,11 +165,10 @@ class _InputPhoneNumberState extends State<InputPhoneNumber> {
 
               InkWell(
                 onTap: (){
-                  Navigator.of(context).pushAndRemoveUntil(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
+                      builder: (context) => const OTPVerification(),
                     ),
-                      (Route<dynamic> route) => false,
                   );
                 },
                 child: Center(

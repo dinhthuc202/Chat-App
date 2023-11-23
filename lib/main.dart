@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:test02/contacts_screen.dart';
+import 'package:test02/home_screen.dart';
 import 'package:test02/input_phone_number.dart';
-import 'package:test02/profile%20_account.dart';
-
-import 'otp_verification.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +20,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       //home: const MyHomePage(title: "",),
-      home: const OTPVerification(),
+      home: const HomeScreen(),
     );
   }
 }
@@ -40,15 +36,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -61,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.symmetric(horizontal:60),
             child: Center(child: Image.asset("assets/images/img_background.png",),),
           ),
-          SizedBox(height: 42,),
+          const SizedBox(height: 42,),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 48),
             child: Center(
@@ -104,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 327,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(38),
-                    color: Color(0xFF002DE3),
+                    color: const Color(0xFF002DE3),
                   ),
                   child: const Center(
                     child: Text(""

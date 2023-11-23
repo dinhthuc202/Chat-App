@@ -19,13 +19,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: controller,
-        children: const <Widget>[
-          ContactsScreen(),
-          ChatsScreen(),
-          MoreScreen(),
-        ],
+      body: SafeArea(
+        child: PageView(
+          controller: controller,
+          children: const <Widget>[
+            ContactsScreen(),
+            ChatsScreen(),
+            MoreScreen(),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
           selectedLabelStyle: const TextStyle(

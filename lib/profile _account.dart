@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import 'home_screen.dart';
+
 class ProfileAccount extends StatefulWidget {
   const ProfileAccount({super.key});
 
@@ -133,19 +135,29 @@ class _ProfileAccountState extends State<ProfileAccount> {
                           ),
                         ),
                       ),
-                      Container(
-                        height: 52,
-                        width: 327,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(38),
-                          color: const Color(0xFF002DE3),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "Save",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                                (Route<dynamic> route) => false,
+                          );
+                        },
+                        child: Container(
+                          height: 52,
+                          width: 327,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(38),
+                            color: const Color(0xFF002DE3),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Save",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ),

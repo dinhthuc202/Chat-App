@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:test02/profile%20_account.dart';
 class OTPVerification extends StatefulWidget {
   const OTPVerification({super.key});
 
@@ -8,15 +9,9 @@ class OTPVerification extends StatefulWidget {
 }
 
 class _OTPVerificationState extends State<OTPVerification> {
-  TextEditingController txt1 = TextEditingController();
-  TextEditingController txt2 = TextEditingController();
-  TextEditingController txt3 = TextEditingController();
-  TextEditingController txt4 = TextEditingController();
+  final List<TextEditingController> _controllers = List.generate(4, (index) => TextEditingController());
+  bool invalidOTP = false;
 
-  bool showDot1 = true;
-  bool showDot2 = true;
-  bool showDot3 = true;
-  bool showDot4 = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,47 +70,85 @@ class _OTPVerificationState extends State<OTPVerification> {
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        showDot1 = false;
-                      });
-                    },
-                    child: showDot1 ? dotInOTPVerification(txt1.text) : myInputBox(context, txt1,showDot1),
+              Center(
+                child: SizedBox(
+                  width: 248,
+                  height: 40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      myInputBox(context, _controllers[0],),
+                      myInputBox(context, _controllers[1],),
+                      myInputBox(context, _controllers[2],),
+                      myInputBox(context, _controllers[3],),
+                    ],
                   ),
-                  GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        showDot2 = false;
-                      });
-                    },
-                    child: showDot2 ? dotInOTPVerification(txt2.text) : myInputBox(context, txt2,showDot2),
-                  ),
-                ],
+                    ///if(_controllers[0].text.isNotEmpty && _controllers[1].text.isNotEmpty && _controllers[2].text.isNotEmpty && _controllers[3].text.isNotEmpty)
+                  ///chekOtp();
               ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Center(
+                  child: SizedBox(
+                    width: 100,
+                    height: 20,
+                    child: invalidOTP ? const Text(
+                      "Invalid otp!",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ) : const Text(""),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 67),
+                child: Center(
+                  child: SizedBox(
+                    width: 116,
+                    height: 52,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: (){
+
+                        },
+                        child: const Text(
+                          "Resend Code",
+                          style: TextStyle(
+                            color: Color(0xFF002DE3),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
       ),
     );
   }
-}
-
-Widget myInputBox(BuildContext context, TextEditingController controller, bool showDot)
-{
-  return Container(
-    height: 40,
-    width: 32,
-    decoration: BoxDecoration(
-      border: Border.all(width: 1),
-    ),
-    child: Center(
+  Widget myInputBox(BuildContext context, TextEditingController controller)
+  {
+    return Container(
+      height: 40,
+      width: 32,
+      decoration: BoxDecoration(
+        color: const Color(0xFFEDEDED),
+        borderRadius: BorderRadius.circular(6),
+      ),
       child: TextField(
         controller: controller,
         decoration: const InputDecoration(
+          border: InputBorder.none,
           counterText: '',
         ),
         keyboardType: TextInputType.number,
@@ -124,20 +157,39 @@ Widget myInputBox(BuildContext context, TextEditingController controller, bool s
         style: const TextStyle(
           fontSize: 32,
           fontWeight: FontWeight.w700,
+          color: Color(0xFF0F1828),
         ),
         onChanged: (value){
-          if(value.isEmpty){
-            showDot = true;
-          }else if(value.length == 1){
+          if (_controllers.every((controller) => controller.text.isNotEmpty)) {
+            final otp = _controllers[0].text + _controllers[1].text + _controllers[2].text + _controllers[3].text;
+            if(otp == '0000'){
+              invalidOTP = false;
+              ///chuyển sang màn hình tiếp theo
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const ProfileAccount(),
+                ),
+              );
+            }else {
+              setState(() {
+                invalidOTP = true;
+                for(var i = 0; i<4;i++)
+                {
+                  _controllers[i].clear();
+                }
+              });
+            }
+          } else if(value.length == 1){
             FocusScope.of(context).nextFocus();
           }
         },
       ),
-    ),
-  );
+    );
+  }
 }
 
-Widget dotInOTPVerification(String text){
+
+Widget dotInOTPVerification(){
   return Container(
     height: 24,
     width: 24,
