@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:test02/chats_screen.dart';
-import 'package:test02/dot_widget.dart';
-import 'package:test02/more_screen.dart';
-
+import 'package:flutter_svg/svg.dart';
+import 'package:messenger/chats_screen.dart';
+import 'package:messenger/dot_widget.dart';
+import 'package:messenger/more_screen.dart';
 import 'contacts_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 

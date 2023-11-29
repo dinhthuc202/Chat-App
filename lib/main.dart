@@ -1,8 +1,24 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:test02/home_screen.dart';
-import 'package:test02/input_phone_number.dart';
+import 'package:flutter/services.dart';
+import 'package:messenger/common/app_text_style.dart';
+import 'package:messenger/firebase_options.dart';
+import 'package:messenger/services/isar_service.dart';
 
-void main() {
+import 'common/app_colors.dart';
+import 'home_screen.dart';
+import 'input_phone_number.dart';
+
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark
+  ));
+
   runApp(const MyApp());
 }
 
@@ -13,21 +29,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ChatApp',
+      ///Tắt debug banner
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      //home: const MyHomePage(title: "",),
-      home: const HomeScreen(),
+      home:const MyHomePage(title: "",),
+      //home: const HomeScreen(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
 
   final String title;
 
@@ -38,50 +54,72 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:<Widget>[
+        children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal:60),
-            child: Center(child: Image.asset("assets/images/img_background.png",),),
+            padding: const EdgeInsets.symmetric(horizontal: 60),
+            child: Center(
+              child: Image.asset(
+                "assets/images/img_background.png",
+              ),
+            ),
           ),
-          const SizedBox(height: 42,),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48),
+          const SizedBox(
+            height: 42,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 48),
             child: Center(
               child: Text(
                 "Connect easily with your family and friends over contries",
-                style: TextStyle(
-                  color: Color(0xFF0F1828),
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTextStyle.primaryS24W700,
                 textAlign: TextAlign.center,
               ),
             ),
           ),
-          const SizedBox(height: 126,),
-          const Center(
+          const SizedBox(
+            height: 126,
+          ),
+          Center(
             child: Text(
-                "Terms & Privacy Policy",
-              style: TextStyle(
-                color: Color(0xFF0F1828),
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+              "Terms & Privacy Policy",
+              style: AppTextStyle.primaryS14W600,
             ),
           ),
-          const SizedBox(height: 16,),
+          const SizedBox(
+            height: 16,
+          ),
           InkWell(
-            onTap: (){
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const InputPhoneNumber(),
-                ),
-              );
+            onTap: () async{
+              ///Mở isarService
+              final isarService = IsarService();
+
+              ///Lấy về số điện thoại đã lưu
+              final phones = await isarService.getAllPhoneNumbers();
+
+              ///Kiểm tra xem đã có sdt đăng nhập chưa
+              ///Chưa có --> chuyển qua nhập sdt
+              ///Có rồi chuyển về màn hình Home
+              if(phones.isNotEmpty){
+                if(context.mounted){
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    ),
+                  );
+                }
+              } else {
+                if(context.mounted){
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const InputPhoneNumber(),
+                    ),
+                  );
+                }
+              }
             },
             child: Center(
               child: Card(
@@ -91,21 +129,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 327,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(38),
-                    color: const Color(0xFF002DE3),
+                    color: AppColors.colorPrimary,
                   ),
-                  child: const Center(
-                    child: Text(""
-                        "Start Messaging",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
+                  child: Center(
+                    child: Text(
+                      "Start Messaging",
+                      style: AppTextStyle.primaryS14W600.copyWith(
+                        color: AppColors.textButtonPrimary,
+                      ),
                       ),
                     ),
                   ),
                 ),
-        ),
+              ),
             ),
-          )
         ],
       ),
     );

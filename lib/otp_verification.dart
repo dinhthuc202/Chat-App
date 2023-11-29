@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:test02/profile%20_account.dart';
+import 'package:messenger/profile_account.dart';
 class OTPVerification extends StatefulWidget {
   const OTPVerification({super.key});
 

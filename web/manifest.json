@@ -1,6 +1,6 @@
 {
-    "name": "test02",
-    "short_name": "test02",
+    "name": "messenger",
+    "short_name": "messenger",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

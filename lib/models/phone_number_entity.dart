@@ -12,6 +12,12 @@ class PhoneNumberEntity{
   final String? idContry;
   final String? contry;
 
+  final phones = IsarLinks<PhoneNumberEntity>();
 
-
-  PhoneNumberEntity(this.phoneNumber, this.firstNumber, this.idContry, this.contry);}
+  PhoneNumberEntity({
+    this.phoneNumber,
+    this.firstNumber,
+    this.idContry,
+    this.contry
+  });
+}

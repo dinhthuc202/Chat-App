@@ -58,7 +58,14 @@ const PhoneNumberEntitySchema = CollectionSchema(
       ],
     )
   },
-  links: {},
+  links: {
+    r'phones': LinkSchema(
+      id: 6344217283716561608,
+      name: r'phones',
+      target: r'PhoneNumberEntity',
+      single: false,
+    )
+  },
   embeddedSchemas: {},
   getId: _phoneNumberEntityGetId,
   getLinks: _phoneNumberEntityGetLinks,
@@ -118,10 +125,10 @@ PhoneNumberEntity _phoneNumberEntityDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = PhoneNumberEntity(
-    reader.readStringOrNull(offsets[3]),
-    reader.readStringOrNull(offsets[1]),
-    reader.readStringOrNull(offsets[2]),
-    reader.readStringOrNull(offsets[0]),
+    contry: reader.readStringOrNull(offsets[0]),
+    firstNumber: reader.readStringOrNull(offsets[1]),
+    idContry: reader.readStringOrNull(offsets[2]),
+    phoneNumber: reader.readStringOrNull(offsets[3]),
   );
   object.id = id;
   return object;
@@ -153,12 +160,14 @@ Id _phoneNumberEntityGetId(PhoneNumberEntity object) {
 
 List<IsarLinkBase<dynamic>> _phoneNumberEntityGetLinks(
     PhoneNumberEntity object) {
-  return [];
+  return [object.phones];
 }
 
 void _phoneNumberEntityAttach(
     IsarCollection<dynamic> col, Id id, PhoneNumberEntity object) {
   object.id = id;
+  object.phones
+      .attach(col, col.isar.collection<PhoneNumberEntity>(), r'phones', id);
 }
 
 extension PhoneNumberEntityQueryWhereSort
@@ -1092,7 +1101,68 @@ extension PhoneNumberEntityQueryObject
     on QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QFilterCondition> {}
 
 extension PhoneNumberEntityQueryLinks
-    on QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QFilterCondition> {}
+    on QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QFilterCondition> {
+  QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QAfterFilterCondition>
+      phones(FilterQuery<PhoneNumberEntity> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'phones');
+    });
+  }
+
+  QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QAfterFilterCondition>
+      phonesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'phones', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QAfterFilterCondition>
+      phonesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'phones', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QAfterFilterCondition>
+      phonesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'phones', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QAfterFilterCondition>
+      phonesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'phones', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QAfterFilterCondition>
+      phonesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'phones', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QAfterFilterCondition>
+      phonesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'phones', lower, includeLower, upper, includeUpper);
+    });
+  }
+}
 
 extension PhoneNumberEntityQuerySortBy
     on QueryBuilder<PhoneNumberEntity, PhoneNumberEntity, QSortBy> {

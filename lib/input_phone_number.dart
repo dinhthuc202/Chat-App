@@ -1,7 +1,9 @@
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:test02/otp_verification.dart';
+import 'package:messenger/models/phone_number.dart';
+import 'package:messenger/otp_verification.dart';
+import 'package:messenger/services/fire_storage_service.dart';
 
 class InputPhoneNumber extends StatefulWidget {
   const InputPhoneNumber({super.key});
@@ -18,6 +20,7 @@ class _InputPhoneNumberState extends State<InputPhoneNumber> {
     code: 'ID',
     dialCode: '+62',
   );
+
 
   @override
   void initState(){
@@ -92,6 +95,10 @@ class _InputPhoneNumberState extends State<InputPhoneNumber> {
                     GestureDetector(
                       onTap: () async{
                         final code = await countryPicker.showPicker(context: context);
+                        if (code == null) {
+                          /// Không cập nhật trạng thái của widget
+                          return;
+                        }
                         setState(() {
                           countryCode = code;
                         });
@@ -121,7 +128,7 @@ class _InputPhoneNumberState extends State<InputPhoneNumber> {
                             ),
                             Container(
                               child: Text(
-                                countryCode?.dialCode ?? "+62",
+                                countryCode?.dialCode ?? "",
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -145,6 +152,7 @@ class _InputPhoneNumberState extends State<InputPhoneNumber> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: TextFormField(
+                              controller: phoneNumnerCotroller,
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
                                 hintText: "Phone Number",
@@ -164,12 +172,48 @@ class _InputPhoneNumberState extends State<InputPhoneNumber> {
               ),
 
               InkWell(
-                onTap: (){
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const OTPVerification(),
-                    ),
-                  );
+                onTap: () async{
+                  // ///Open Isar service
+                  // final isarService = IsarService();
+                  //
+                  // ///Lấy số điện thoại vừa nhập
+                  // final newPhone = PhoneNumberEntity(
+                  //     phoneNumber: phoneNumnerCotroller.text,
+                  //     idContry: countryCode?.dialCode??"",
+                  // );
+                  //
+                  // ///Lưu số điện thoại vào local máy --> call hàm create
+                  // final result = await isarService.createPhoneNumber(newPhone);
+                  //
+                  // ///Nếu lưu thành công vào màn hình tiếp theo
+                  // if(result){
+                  //   if(context.mounted){
+                  //     Navigator.of(context).push(
+                  //       MaterialPageRoute(
+                  //         builder: (context) => const OTPVerification(),
+                  //       ),
+                  //     );
+                  //   }
+                  // }
+
+                  try{
+                    final fireStorageService = FireStorageService();
+                    final newPhone = PhoneNumber(
+                      phone: phoneNumnerCotroller.text,
+                    );
+                    final result = await fireStorageService.createPhoneNumber(newPhone);
+
+                    if(context.mounted){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const OTPVerification(),
+                        ),
+                      );
+                    }
+                  }catch(e){
+                    print("Lỗi thêm data");
+                  }
+
                 },
                 child: Center(
                   child: Card(
