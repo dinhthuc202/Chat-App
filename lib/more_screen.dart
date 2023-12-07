@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:messenger/services/isar_service.dart';
 
 import 'common/app_colors.dart';
@@ -137,20 +140,28 @@ class _MoreScreenState extends State<MoreScreen> {
                   ///Logout
                   InkWell(
                     onTap: () async{
-                      final isar = IsarService();
-                      final listPhones = await isar.getAllPhoneNumbers();
-                      if(listPhones.isNotEmpty){
-                        if(context.mounted) {
-                          final result = await isar.deletePhoneNumber(
-                              listPhones[0]);
-                          if (result) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (context) => MyHomePage(title: "",),
-                                ), (Route<dynamic> route) => false);
-                          }
-                        }
+                      await FirebaseAuth.instance.signOut();
+                      await GoogleSignIn().signOut();
+                      if(FirebaseAuth.instance.currentUser == null){
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const MyHomePage(title: "")));
                       }
+
+
+                      // final isar = IsarService();
+                      // final listPhones = await isar.getAllPhoneNumbers();
+                      // if(listPhones.isNotEmpty){
+                      //   if(context.mounted) {
+                      //     final result = await isar.deletePhoneNumber(
+                      //         listPhones[0]);
+                      //     if (result) {
+                      //       Navigator.of(context).pushAndRemoveUntil(
+                      //           MaterialPageRoute(
+                      //             builder: (context) => MyHomePage(title: "",),
+                      //           ), (Route<dynamic> route) => false);
+                      //     }
+                      //   }
+                      // }
+
                     },
                       child: buttonMore("ic_logout.svg", "Logout", "")),
                   Padding(

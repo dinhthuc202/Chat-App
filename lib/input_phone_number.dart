@@ -1,9 +1,10 @@
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:messenger/models/phone_number.dart';
-import 'package:messenger/otp_verification.dart';
 import 'package:messenger/services/fire_storage_service.dart';
+
+import 'models/phone_number.dart';
+import 'otp_verification.dart';
 
 class InputPhoneNumber extends StatefulWidget {
   const InputPhoneNumber({super.key});

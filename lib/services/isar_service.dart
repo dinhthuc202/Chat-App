@@ -1,6 +1,7 @@
 import 'package:isar/isar.dart';
-import 'package:messenger/models/phone_number_entity.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../models/phone_number_entity.dart';
 
 class IsarService {
   late Future<Isar> database;

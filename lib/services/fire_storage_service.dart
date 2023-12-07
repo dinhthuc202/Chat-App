@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:isar/isar.dart';
-import 'package:messenger/models/phone_number.dart';
+import '../models/phone_number.dart';
 
 class FireStorageService {
   final CollectionReference _phoneCollectionReference =

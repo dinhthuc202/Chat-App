@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:messenger/common/app_colors.dart';
-import 'package:messenger/common/app_text_style.dart';
+
+import 'common/app_colors.dart';
+import 'common/app_text_style.dart';
 class ChatsScreen extends StatefulWidget {
   const ChatsScreen({super.key});
 

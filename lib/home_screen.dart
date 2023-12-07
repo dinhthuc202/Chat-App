@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:messenger/chats_screen.dart';
-import 'package:messenger/dot_widget.dart';
-import 'package:messenger/more_screen.dart';
+import 'chats_screen.dart';
 import 'contacts_screen.dart';
+import 'dot_widget.dart';
+import 'more_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
