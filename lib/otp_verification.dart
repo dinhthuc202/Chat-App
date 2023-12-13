@@ -165,11 +165,11 @@ class _OTPVerificationState extends State<OTPVerification> {
             if(otp == '0000'){
               invalidOTP = false;
               ///chuyển sang màn hình tiếp theo
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const ProfileAccount(),
-                ),
-              );
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => const ProfileAccount(),
+              //   ),
+              // );
             }else {
               setState(() {
                 invalidOTP = true;

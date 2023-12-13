@@ -1,13 +1,10 @@
-import 'dart:convert';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:messenger/models/chat_user.dart';
+import 'package:messenger/widgets/chat_user_card.dart';
 import 'apis.dart';
-import 'chat_screen.dart';
 import 'common/app_colors.dart';
 import 'common/app_text_style.dart';
-import 'models/chat_user.dart';
 
 class ContactsScreen extends StatefulWidget {
   const ContactsScreen({super.key});
@@ -21,12 +18,11 @@ class _HomeChatScreenState extends State<ContactsScreen> {
   List<ChatUser> list = [];
   List<ChatUser> searchList = [];
   bool _isSearching = false;
-  final FocusNode _focusNode = FocusNode();
+  //final FocusNode _focusNode = FocusNode();
 
   @override
   void dispose() {
-    // Đảm bảo rằng bạn giải phóng FocusNode khi không cần thiết nữa để tránh rò rỉ bộ nhớ
-    _focusNode.dispose();
+    //_focusNode.dispose();
     super.dispose();
   }
 
@@ -37,18 +33,18 @@ class _HomeChatScreenState extends State<ContactsScreen> {
     //_focusNode.addListener(_onFocusChange);
 
 
-    //APIs.getSelfInfo();
+    APIs.getSelfInfo();
   }
-  void _onFocusChange() {
-    // Nơi xử lý sự kiện khi TextField được focus hoặc mất focus
-    if (_focusNode.hasFocus) {
-      _isSearching = !_isSearching;
-      print('TextField is focused');
-    } else {
-      _isSearching = !_isSearching;
-      print('TextField lost focus');
-    }
-  }
+  // void _onFocusChange() {
+  //   // Nơi xử lý sự kiện khi TextField được focus hoặc mất focus
+  //   if (_focusNode.hasFocus) {
+  //     _isSearching = !_isSearching;
+  //     print('TextField is focused');
+  //   } else {
+  //     _isSearching = !_isSearching;
+  //     print('TextField lost focus');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +108,7 @@ class _HomeChatScreenState extends State<ContactsScreen> {
                   ),
                   child: TextField(
                     controller: _searchController,
-                    focusNode: _focusNode,
+                    //focusNode: _focusNode,
                     onChanged: (value){
                       searchList.clear();
 
@@ -144,6 +140,7 @@ class _HomeChatScreenState extends State<ContactsScreen> {
                 ),
               ),
               StreamBuilder(
+
                   stream: APIs.getAllUser(),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
@@ -154,19 +151,11 @@ class _HomeChatScreenState extends State<ContactsScreen> {
                           child: CircularProgressIndicator(),
                         );
 
-                      //if some or all data is loaded then show it
                       case ConnectionState.active:
                       case ConnectionState.done:
 
                         final data = snapshot.data?.docs;
                         list = data?.map((e) => ChatUser.fromJson(e.data())).toList()??[];
-
-                        // for (var i in data!) {
-                        //   list.add(i.data());
-                        //   print(jsonEncode(i.data()));
-                        // }
-
-                        ///print(list[index]['name']);
                         return Expanded(
                           child: ListView.separated(
                               itemCount:_isSearching || _searchController.text.isNotEmpty ? searchList.length : list.length,
@@ -179,14 +168,8 @@ class _HomeChatScreenState extends State<ContactsScreen> {
                                 );
                               },
                               itemBuilder: (context, index) {
-                                return GestureDetector
-                                  (
-                                  onTap: (){
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (_) => ChatScreen(user: _isSearching || _searchController.text.isNotEmpty ? searchList[index] : list[index])));
-                                  },
-                                    child: widgetContract(_isSearching || _searchController.text.isNotEmpty ? searchList[index] : list[index]));
+                                return ChatUserCard(
+                                    user: _isSearching || _searchController.text.isNotEmpty ? searchList[index] : list[index]);
                               }),
                         );
                     }
@@ -198,144 +181,3 @@ class _HomeChatScreenState extends State<ContactsScreen> {
     );
   }
 }
-
-Widget widgetContract (ChatUser user){
-  return Container(
-    margin: const EdgeInsets.only(bottom: 4),
-    child: Padding(
-      padding: const EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-      ),
-      child: Row(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(
-              right: 12,
-              bottom: 12,
-            ),
-            child: Container(
-              height: 56,
-              width: 56,
-              child: Stack(
-                children: [
-                  Center(
-                    child: SizedBox(
-                      height: 48,
-                      width: 48,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: CachedNetworkImage(
-                          imageUrl: user.image,
-                          placeholder: (context, url) => CircularProgressIndicator(),
-                          errorWidget: (context, url, error) => Text(
-                            convertName(user.name.toString()),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.only(left: 36.0),
-                    child: Container(
-                      width: 16,
-                      height: 16,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 12,
-                          height: 12,
-                          decoration: BoxDecoration(
-                            color: Color(0xFF2CC069),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding:
-            const EdgeInsets.only(bottom: 15),
-            child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 2),
-                  child: Text(
-                    user.name.toString(),
-                    style:
-                    AppTextStyle.primaryS14W600,
-                  ),
-                ),
-                Text(
-                  user.status.toString(),
-                  style: AppTextStyle.primaryS12W400
-                      .copyWith(
-                    color: AppColors.textHintPrimary,
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    ),
-  );
-}
-
-String convertName (String name){
-  List<String> tmp = name.split(" ");
-  String result = "";
-  for (var item in tmp) {
-    result += item[0];
-  }
-  return result;
-}
-
-class UserEntity {
-  final String? avatar;
-  final String? userName;
-  final String? status;
-
-  UserEntity({
-    this.status,
-    this.avatar,
-    this.userName,
-  });
-}
-
-List<UserEntity> users = [
-  UserEntity(
-    avatar:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz4bCSBiL3114mq9BSIZmJ3Rq6huVNeW053516pM5IhIZeNtVGvSWtaXrE12AJUSSHij0&usqp=CAU",
-    userName: "Athalia Putri",
-    status: "Last seen yesterday",
-  ),
-  UserEntity(
-    avatar:
-        "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
-    userName: "Erlan Sadewa",
-    status: "Online",
-  ),
-  UserEntity(
-    avatar: "https://forumine.com/download/file.php?avatar=54_1519777959.jpg",
-    userName: "Midala Huera",
-    status: "Last seen 3 hours ago",
-  )
-];

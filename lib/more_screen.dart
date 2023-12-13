@@ -1,15 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:messenger/services/isar_service.dart';
-
+import 'package:messenger/apis.dart';
+import 'package:messenger/models/chat_user.dart';
+import 'package:messenger/profile_account.dart';
+import 'package:messenger/widgets/button_more.dart';
 import 'common/app_colors.dart';
 import 'common/app_text_style.dart';
 import 'main.dart';
 class MoreScreen extends StatefulWidget {
-  const MoreScreen({super.key});
+  final ChatUser user;
+  const MoreScreen({super.key, required this.user,});
 
   @override
   State<MoreScreen> createState() => _MoreScreenState();
@@ -44,65 +46,57 @@ class _MoreScreenState extends State<MoreScreen> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color:  AppColors.backgroundInput,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(13),
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: SvgPicture.asset(
-                              "assets/vectors/profile_avata.svg",
-                              width: 16,
-                              height: 19,
-                              fit: BoxFit.scaleDown,
-                            ),
-                          ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: Image.network(
+                          APIs.me.image,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.contain,
                         ),
                       ),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left:20,bottom: 12,top: 8,),
-                          child: Column(
-                            children: [
-                              Expanded(
+                      Padding(
+                        padding: const EdgeInsets.only(left:20,bottom: 12,top: 15,),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                APIs.me.name,
+                                textAlign: TextAlign.left,
+                                maxLines: 1,
+                                style: AppTextStyle.primaryS14W600,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 2,bottom: 4),
+                              child: Expanded(
                                 child: Text(
-                                  "Almayra Zamzamy",
+                                  APIs.me.email,
                                   textAlign: TextAlign.left,
                                   maxLines: 1,
-                                  style: AppTextStyle.primaryS14W600,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 2,bottom: 4),
-                                child: Expanded(
-                                  child: Text(
-                                    "+62 1309 - 1710 - 1920",
-                                    textAlign: TextAlign.left,
-                                    maxLines: 1,
-                                    style: AppTextStyle.primaryS12W400.copyWith(
-                                      color: AppColors.textHintPrimary,
-                                    ),
+                                  style: AppTextStyle.primaryS12W400.copyWith(
+                                    color: AppColors.textHintPrimary,
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
+                              ),
+                            )
+                          ],
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: SvgPicture.asset(
-                      "assets/vectors/ic_arrow_right.svg",
-                      fit: BoxFit.scaleDown,
+                  InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (_)=> ProfileAccount(user: APIs.me)));
+                    },
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: SvgPicture.asset(
+                        "assets/vectors/ic_arrow_right.svg",
+                        fit: BoxFit.scaleDown,
+                      ),
                     ),
                   ),
                 ],
@@ -168,7 +162,6 @@ class _MoreScreenState extends State<MoreScreen> {
                     padding: const EdgeInsets.all(4.0),
                     child: Container(
                       color: AppColors.borderPrimary,
-                      width: 343,
                       height: 1,
                     ),
                   ),
@@ -179,54 +172,6 @@ class _MoreScreenState extends State<MoreScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-
-  Widget buttonMore (String iconName, String content, String urlPush){
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Container(
-        width: 343,
-        height: 40,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: SvgPicture.asset("assets/vectors/$iconName",
-                    fit: BoxFit.scaleDown,
-                  ),
-                ),
-                const SizedBox(
-                  width: 6,
-                ),
-                SizedBox(
-                  height: 24,
-                  child: Center(
-                    child: Text(
-                      content,
-                      style: AppTextStyle.primaryS14W600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: SvgPicture.asset(
-                "assets/vectors/ic_arrow_right.svg",
-                colorFilter: const ColorFilter.mode(Color(0xFF0F1828), BlendMode.srcIn),
-                fit: BoxFit.scaleDown,
-              ),
-            )
-          ],
-        ),
       ),
     );
   }

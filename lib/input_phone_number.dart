@@ -1,6 +1,7 @@
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:messenger/common/app_colors.dart';
 import 'package:messenger/services/fire_storage_service.dart';
 
 import 'models/phone_number.dart';
@@ -224,7 +225,7 @@ class _InputPhoneNumberState extends State<InputPhoneNumber> {
                       width: 327,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(38),
-                        color: const Color(0xFF002DE3),
+                        color: AppColors.colorPrimary,
                       ),
                       child: const Center(
                         child: Text(

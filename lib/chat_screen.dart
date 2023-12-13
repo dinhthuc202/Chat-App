@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:messenger/models/message.dart';
 import 'apis.dart';
 import 'common/app_colors.dart';
 import 'common/app_text_style.dart';
 import 'models/chat_user.dart';
-import 'models/message.dart';
 import 'widgets/messenge_card.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -19,8 +17,9 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  List<Message> _list= [];
+  List<Message> _list = [];
 
+  TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(
-              top: 14,
-              bottom: 13,
-            ),
+            padding: const EdgeInsets.only(top: 14, bottom: 13,),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -55,8 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   const SizedBox(
                     width: 8,
                   ),
-                  SizedBox(
-                    width: 255,
+                  Expanded(
                     child: Text(
                       widget.user.name,
                       style: AppTextStyle.primaryS18W600,
@@ -91,58 +86,56 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           Expanded(
             child: StreamBuilder(
-                stream: APIs.getAllMessages(),
-                builder: (context, snapshot){
-                  switch(snapshot.connectionState){
-                    case ConnectionState.waiting:
-                    case ConnectionState.none:
-                      return const Center(child: CircularProgressIndicator(),);
+              stream: APIs.getAllMessages(widget.user),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
 
-                    case ConnectionState.active:
-                    case ConnectionState.done:
-                      final data = snapshot.data?.docs;
-                      print('Data: ${ jsonEncode(data![0].data())}');
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    final data = snapshot.data?.docs;
+                    _list = data
+                        ?.map((e) => Message.fromJson(e.data()))
+                        .toList() ??
+                        [];
 
-                      _list.clear();
-                      _list.add(Message(
-                        msg: 'Hii',
-                        toId: '123',
-                        read: 'True',
-                        type: Type.text,
-                        sent: '12:05 AM',
-                        fromId: APIs.user.uid));
-                    _list.add(Message(
-                        msg: 'hello',
-                        toId: APIs.user.uid,
-                        read: '',
-                        type: Type.text,
-                        sent: '12:10 AM',
-                        fromId: '123'));
-
-                    if(_list.isNotEmpty){
-                        return ListView.builder(
-                            itemCount: _list.length,
-                            padding: EdgeInsets.only(top: 5),
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return MessengeCard(message: _list[index],);
-                            });
-                      }else{
-                        return const Center(
-                          child: Text(
-                            'Say hi!',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: AppColors.textPrimary,
-                            ),
+                    if (_list.isNotEmpty) {
+                      return ListView.builder(
+                          itemCount: _list.length,
+                          padding: const EdgeInsets.only(top: 5),
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return MessengeCard(
+                              message: _list[index],
+                            );
+                          });
+                    } else {
+                      return const Center(
+                        child: Text(
+                          'Say hi!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: AppColors.textPrimary,
                           ),
-                        );
-                      }
-                  }
-                },
+                        ),
+                      );
+                    }
+                }
+              },
             ),
           ),
-          chatInput(),
+          Container(
+            color: AppColors.borderPrimary,
+            height: 1,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: chatInput(),
+          ),
         ],
       )),
     );
@@ -152,7 +145,10 @@ class _ChatScreenState extends State<ChatScreen> {
     return Row(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16,horizontal: 12,),
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+            horizontal: 12,
+          ),
           child: SizedBox(
             width: 24,
             height: 24,
@@ -163,24 +159,43 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ),
-        const Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: AppColors.backgroundInput,
-                border: InputBorder.none,
+        Expanded(
+            child: SizedBox(
+              height: 50,
+              child: TextField(
+                controller: textEditingController,
+                style: AppTextStyle.primaryS14W600,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.only(bottom: 5.0,left: 8,),
+                  filled: true,
+                  fillColor: AppColors.backgroundInput,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide.none,
               ),
-        )
+          ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16,horizontal: 12,),
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: SvgPicture.asset(
-              "assets/vectors/ic_send.svg",
-              color: AppColors.colorPrimary,
-              fit: BoxFit.scaleDown,
+            )),
+        InkWell(
+          onTap:(){
+            if(textEditingController.text.isNotEmpty){
+              APIs.sendMessage(widget.user, textEditingController.text);
+              textEditingController.text = '';
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 12,
+            ),
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: SvgPicture.asset(
+                "assets/vectors/ic_send.svg",
+                color: AppColors.colorPrimary,
+                fit: BoxFit.scaleDown,
+              ),
             ),
           ),
         ),

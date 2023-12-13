@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:messenger/apis.dart';
+import 'package:messenger/models/chat_user.dart';
 import 'chats_screen.dart';
 import 'contacts_screen.dart';
-import 'dot_widget.dart';
+import 'widgets/dot_widget.dart';
 import 'more_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,6 +15,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    APIs.getSelfInfo();
+  }
   int _selectedIndex = 0;
   final PageController controller = PageController();
 
@@ -22,10 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: PageView(
           controller: controller,
-          children: const <Widget>[
+          children: <Widget>[
             ContactsScreen(),
             ChatsScreen(),
-            MoreScreen(),
+            MoreScreen(user: APIs.me),
           ],
         ),
       ),

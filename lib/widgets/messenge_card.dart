@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:messenger/apis.dart';
 import 'package:messenger/common/app_colors.dart';
 import 'package:messenger/common/app_text_style.dart';
-import '../apis.dart';
-import '../models/message.dart';
+import 'package:messenger/models/message.dart';
+import 'package:messenger/models/my_date_util.dart';
 
 class MessengeCard extends StatefulWidget {
 
@@ -20,15 +21,18 @@ class _MessengeCardState extends State<MessengeCard> {
   }
 
   Widget _blueMessage(){
+    if(widget.message.read.isEmpty){
+      APIs.updateMessageReadStatus(widget.message);
+    }
     return Row(
       children: [
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(10),
-            margin: EdgeInsets.only(left: 16,right: 22,top:6,bottom: 6),
-            decoration: BoxDecoration(
-              color: Color(0xFF4C85B4),
-              borderRadius: const BorderRadius.only(
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(left: 16,right: 22,top:6,bottom: 6),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
                 bottomRight: Radius.circular(16),
@@ -41,11 +45,11 @@ class _MessengeCardState extends State<MessengeCard> {
                   widget.message.msg,
                   style: AppTextStyle.primaryS14W400,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 4,
                 ),
                 Text(
-                  widget.message.sent,
+                  MyDateUtil.getFormattedTime(context: context, time: widget.message.sent),
                   style: AppTextStyle.primaryS10W400.copyWith(
                     color: AppColors.textHintPrimary,
                   ),
@@ -59,53 +63,57 @@ class _MessengeCardState extends State<MessengeCard> {
     );
   }
 
-  Widget _greenMessage(){
-    return Flexible(
-      child: Container(
-        padding: EdgeInsets.all(10),
-        margin: EdgeInsets.only(left: 16,right: 22,top:6,bottom: 6),
-        decoration: BoxDecoration(
-            color: Color(0xFF002DE3),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-              bottomLeft: Radius.circular(16),
-            )
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.message.msg,
-              style: AppTextStyle.primaryS14W400.copyWith(
-                color: Colors.white,
-              ),
+  Widget _greenMessage() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Flexible(
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(left: 22, right: 16, top: 6, bottom: 6),
+            decoration: const BoxDecoration(
+                color: AppColors.colorPrimary,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                )
             ),
-            const SizedBox(
-              height: 4,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.message.sent,
-                  style: AppTextStyle.primaryS10W400.copyWith(
-                    color: Colors.white,
-                  ),
+                  widget.message.msg,
+                  style: AppTextStyle.primaryS14W400.copyWith(
+                    color:Colors.white,
+                  )
                 ),
-                Text(
-                  widget.message.read == 'True' ? ' · Read' : '',
-                  style: AppTextStyle.primaryS10W400.copyWith(
-                    color: Colors.white,
-                  ),
+                const SizedBox(
+                  height: 4,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      MyDateUtil.getFormattedTime(context: context, time: widget.message.sent),
+                      style: AppTextStyle.primaryS10W400.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      widget.message.read == '' ? '' : ' · Read',
+                      style: AppTextStyle.primaryS10W400.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
 
-      ),
+          ),
+        ),
+      ],
     );
   }
 }
