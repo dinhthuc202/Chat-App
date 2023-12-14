@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:messenger/apis.dart';
+import 'package:messenger/models/apis.dart';
 import 'package:messenger/models/chat_user.dart';
 import 'chats_screen.dart';
 import 'contacts_screen.dart';
@@ -20,6 +21,12 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     APIs.getSelfInfo();
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      print(message);
+      if(message.toString().contains('resume')) APIs.updateActiveStatus(true);
+      if(message.toString().contains('pause')) APIs.updateActiveStatus(false);
+      return Future.value(message);
+    });
   }
   int _selectedIndex = 0;
   final PageController controller = PageController();

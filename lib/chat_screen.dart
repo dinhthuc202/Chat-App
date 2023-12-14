@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:messenger/models/message.dart';
-import 'apis.dart';
+import 'models/apis.dart';
 import 'common/app_colors.dart';
 import 'common/app_text_style.dart';
 import 'models/chat_user.dart';

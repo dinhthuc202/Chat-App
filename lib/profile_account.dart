@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger/apis.dart';
+import 'package:messenger/models/apis.dart';
 import 'package:messenger/common/app_colors.dart';
 import 'package:messenger/common/app_text_style.dart';
 import 'package:messenger/models/chat_user.dart';

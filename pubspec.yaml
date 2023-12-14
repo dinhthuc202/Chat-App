@@ -27,16 +27,16 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
-isar_version: &isar_version 3.1.0
+# isar_version: &isar_version 3.1.0
 dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^2.0.7
-  isar: *isar_version
+  # isar: *isar_version
   path_provider:
   firebase_storage:
   firebase_core:
-  isar_flutter_libs: *isar_version # contains Isar Core
+  # isar_flutter_libs: *isar_version # contains Isar Core
   firebase_messaging: ^14.7.6
   permission_handler:
   cloud_firestore: ^4.13.3
@@ -52,22 +52,23 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: "^0.13.1"
-  isar_generator: *isar_version
+#  flutter_launcher_icons: "^0.13.1"
+  # isar_generator: *isar_version
   build_runner: any
   json_serializable:
-  isar_flutter_libs:
+  # isar_flutter_libs:
   flutter_lints: ^2.0.0
 
 
-flutter_launcher_icons:
-  android: true
-  image_path: "assets/images/icon.png"
-  min_sdk_android: 21
+#flutter_launcher_icons:
+#  android: true
+#  image_path: "assets/images/icon.png"
+#  min_sdk_android: 21
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

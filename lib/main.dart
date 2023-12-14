@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:messenger/apis.dart';
+import 'package:messenger/models/apis.dart';
 import 'common/app_colors.dart';
 import 'common/app_text_style.dart';
 import 'firebase_options.dart';

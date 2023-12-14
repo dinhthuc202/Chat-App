@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger/apis.dart';
+import 'package:messenger/models/apis.dart';
 import 'package:messenger/chat_screen.dart';
 import 'package:messenger/common/app_colors.dart';
 import 'package:messenger/common/app_text_style.dart';
@@ -38,7 +37,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
             final list =
                 data?.map((e) => Message.fromJson(e.data() as Map<String, dynamic>)).toList() ?? [];
             if (list.isNotEmpty) _message = list[0];
-            return Container(
+            return _message == null ? Container() : Container(
               margin: const EdgeInsets.only(bottom: 4),
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -80,7 +79,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                               ),
                             ),
 
-                            if (_message == null) Container() else Padding(
+                            widget.user.isOnline ? Padding(
                               padding: const EdgeInsets.only(left: 36.0),
                               child: Container(
                                 width: 16,
@@ -100,7 +99,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                                   ),
                                 ),
                               ),
-                            ),
+                            ) : Container(),
                           ],
                         ),
                       ),

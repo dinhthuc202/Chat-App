@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:messenger/apis.dart';
+import 'package:messenger/models/apis.dart';
 import 'package:messenger/models/chat_user.dart';
 import 'package:messenger/profile_account.dart';
 import 'package:messenger/widgets/button_more.dart';
