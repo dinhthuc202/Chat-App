@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:messenger/models/chat_user.dart';
-import 'package:messenger/widgets/chat_user_card.dart';
 import 'package:messenger/widgets/contract_card.dart';
 import 'models/apis.dart';
 import 'common/app_colors.dart';
@@ -20,8 +19,6 @@ class _HomeChatScreenState extends State<ContactsScreen> {
   List<ChatUser> searchList = [];
   bool _isSearching = false;
 
-  //final FocusNode _focusNode = FocusNode();
-
   @override
   void dispose() {
     //_focusNode.dispose();
@@ -32,17 +29,6 @@ class _HomeChatScreenState extends State<ContactsScreen> {
   void initState() {
     super.initState();
   }
-
-  // void _onFocusChange() {
-  //   // Nơi xử lý sự kiện khi TextField được focus hoặc mất focus
-  //   if (_focusNode.hasFocus) {
-  //     _isSearching = !_isSearching;
-  //     print('TextField is focused');
-  //   } else {
-  //     _isSearching = !_isSearching;
-  //     print('TextField lost focus');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +92,6 @@ class _HomeChatScreenState extends State<ContactsScreen> {
                   ),
                   child: TextField(
                     controller: _searchController,
-                    //focusNode: _focusNode,
                     onChanged: (value) {
                       searchList.clear();
 
@@ -158,6 +143,7 @@ class _HomeChatScreenState extends State<ContactsScreen> {
                                 ?.map((e) => ChatUser.fromJson(e.data()))
                                 .toList() ??
                             [];
+                        list.sort((a,b) => a.name.compareTo(b.name));
                         return Expanded(
                           child: ListView.separated(
                               itemCount: _isSearching ||

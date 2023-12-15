@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:messenger/models/apis.dart';
 import 'common/app_colors.dart';
@@ -10,16 +12,16 @@ import 'common/app_text_style.dart';
 import 'firebase_options.dart';
 import 'home_screen.dart';
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
   ));
-
+  _initializeFirebase();
   runApp(const MyApp());
 }
 
@@ -36,10 +38,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:APIs.auth.currentUser != null
-          ?const HomeScreen()
-          :const MyHomePage(title: ""),
-
+      home: APIs.auth.currentUser != null
+          ? const HomeScreen()
+          : const MyHomePage(title: ""),
       //const MyHomePage(title: "",),
       //home: const HomeScreen(),
     );
@@ -56,25 +57,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 Future<UserCredential?> signInWithGoogle() async {
-  try{
+  try {
     await InternetAddress.lookup('google.com');
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
     );
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
-  }catch(e){
+  } catch (e) {
     print('signInWithGoogle: $e');
-  };
+  }
+  ;
 }
+
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
@@ -117,48 +121,22 @@ class _MyHomePageState extends State<MyHomePage> {
             height: 16,
           ),
           InkWell(
-            onTap: () async{
-              signInWithGoogle().then((user) async{
-                if(user != null) {
-                  if((await APIs.userExists())){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>HomeScreen()));
-                  }else{
+            onTap: () async {
+              signInWithGoogle().then((user) async {
+                if (user != null) {
+                  if ((await APIs.userExists())) {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (_) => HomeScreen()));
+                  } else {
                     await APIs.createUser().then((value) {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const HomeScreen()));
                     });
+                  }
                 }
-
-                }
-
               });
-              /*
-              ///Mở isarService
-              final isarService = IsarService();
-
-              ///Lấy về số điện thoại đã lưu
-              final phones = await isarService.getAllPhoneNumbers();
-
-              ///Kiểm tra xem đã có sdt đăng nhập chưa
-              ///Chưa có --> chuyển qua nhập sdt
-              ///Có rồi chuyển về màn hình Home
-              if(phones.isNotEmpty){
-                if(context.mounted){
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ),
-                  );
-                }
-              } else {
-                if(context.mounted){
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const InputPhoneNumber(),
-                    ),
-                  );
-                }
-              }
-               */
             },
             child: Center(
               child: Card(
@@ -176,14 +154,24 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: AppTextStyle.primaryS14W600.copyWith(
                         color: AppColors.textButtonPrimary,
                       ),
-                      ),
                     ),
                   ),
                 ),
               ),
             ),
+          ),
         ],
       ),
     );
   }
+}
+
+_initializeFirebase() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await FlutterNotificationChannel.registerNotificationChannel(
+      description: 'For Showing Message Notification',
+      id: 'chats',
+      importance: NotificationImportance.IMPORTANCE_HIGH,
+      name: 'Chats');
 }

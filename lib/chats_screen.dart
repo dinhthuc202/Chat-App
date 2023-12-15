@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:messenger/models/apis.dart';
-import 'package:messenger/contacts_screen.dart';
 import 'package:messenger/models/chat_user.dart';
 import 'package:messenger/widgets/chat_user_card.dart';
 import 'package:messenger/widgets/stories.dart';
@@ -158,7 +157,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
                           ),
                           child: TextField(
                             controller: _searchController,
-                            //focusNode: _focusNode,
                             onChanged: (value) {
                               searchList.clear();
 

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Message {
   Message({
     required this.msg,
@@ -33,5 +35,15 @@ class Message {
     data['fromId'] = fromId;
     return data;
   }
+  Message.fromSnapshot(QueryDocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+    msg = data['msg'].toString();
+    toId = data['toId'].toString();
+    read = data['read'].toString();
+    type = data['type'].toString() == Type.image.name ? Type.image : Type.text;
+    sent = data['sent'].toString();
+    fromId = data['fromId'].toString();
+  }
+
 }
 enum Type { text, image}

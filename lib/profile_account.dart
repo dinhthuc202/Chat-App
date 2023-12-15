@@ -94,7 +94,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                                 padding: const EdgeInsets.only(left: 73,top: 77),
                                 child: InkWell(
                                   onTap: (){
-                                    _showBottomSheet();
+                                    _showBottomSheetImage();
                                   },
                                   child: SvgPicture.asset(
                                     "assets/vectors/ic_plus_circle.svg",
@@ -198,7 +198,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
     );
   }
 
-  void _showBottomSheet() {
+  void _showBottomSheetImage() {
     showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(

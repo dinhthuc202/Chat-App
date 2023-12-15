@@ -24,6 +24,15 @@ class APIs{
         print('Push Token: $t');
       }
     });
+
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   print('Got a message whilst in the foreground!');
+    //   print('Message data: ${message.data}');
+    //
+    //   if (message.notification != null) {
+    //     print('Message also contained a notification: ${message.notification}');
+    //   }
+    // });
   }
 
   // for sending push notification
@@ -36,6 +45,9 @@ class APIs{
           "title": me.name, //our name should be send
           "body": msg,
           "android_channel_id": "chats"
+        },
+        "data": {
+          "some_data": "User ID: ${me.id}",
         },
       };
 
@@ -123,21 +135,46 @@ class APIs{
     return firestore.collection('chats/${getConversationID(chatUser.id)}/messages/').snapshots();
   }
   // send message
-  static Future<void> sendMessage(ChatUser chatUser, String msg) async{
-    //Message sending time
+  static Future<void> sendMessage(
+      ChatUser chatUser, String msg, Type type) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
-    //Message to send
-    final Message message = Message(
-        msg: msg,
-        toId: chatUser.id,
-        read: '',
-        type: Type.text,
-        sent: time,
-        fromId: user.uid);
 
-    final ref = firestore.collection('chats/${getConversationID(chatUser.id)}/messages/');
-    await ref.doc(time).set(message.toJson()).then((value) => sendPushNotification(chatUser,msg));
+    //message to send
+    final Message message = Message(
+        toId: chatUser.id,
+        msg: msg,
+        read: '',
+        type: type,
+        fromId: user.uid,
+        sent: time);
+
+    final ref = firestore
+        .collection('chats/${getConversationID(chatUser.id)}/messages/');
+    await ref.doc(time).set(message.toJson()).then((value) =>
+        sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
   }
+
+  //send chat image
+  static Future<void> sendChatImage(ChatUser chatUser, File file) async {
+    //getting image file extension
+    final ext = file.path.split('.').last;
+
+    //storage file ref with path
+    final ref = storage.ref().child(
+        'images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+
+    //uploading image
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .then((p0) {
+      print('Data Transferred: ${p0.bytesTransferred / 1000} kb');
+    });
+
+    //updating image in firestore database
+    final imageUrl = await ref.getDownloadURL();
+    await sendMessage(chatUser, imageUrl, Type.image);
+  }
+
   //Update read status message
   static Future<void> updateMessageReadStatus(Message message) async{
     firestore.collection('chats/${getConversationID(message.fromId)}/messages/')
@@ -153,6 +190,22 @@ class APIs{
         .limit(1)
         .snapshots();
   }
+  static Stream<String> getTimeLastMessage(ChatUser user) {
+    return FirebaseFirestore.instance
+        .collection('chats/${getConversationID(user.id)}/messages/')
+        .orderBy('sent', descending: true)
+        .limit(1)
+        .snapshots()
+        .map((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        Message message =Message.fromSnapshot(querySnapshot.docs.first);
+        return message.sent;
+      } else {
+        throw Exception('');
+      }
+    });
+  }
+
 
   static Future<void> updateProfilePicture(File file) async {
     //getting image file extension
