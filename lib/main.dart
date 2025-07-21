@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_notification_channel/flutter_notification_channel.dart';
-import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:messenger/models/apis.dart';
 import 'common/app_colors.dart';
@@ -169,9 +167,9 @@ class _MyHomePageState extends State<MyHomePage> {
 _initializeFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  await FlutterNotificationChannel.registerNotificationChannel(
-      description: 'For Showing Message Notification',
-      id: 'chats',
-      importance: NotificationImportance.IMPORTANCE_HIGH,
-      name: 'Chats');
+  // await FlutterNotificationChannel.registerNotificationChannel(
+  //     description: 'For Showing Message Notification',
+  //     id: 'chats',
+  //     importance: NotificationImportance.IMPORTANCE_HIGH,
+  //     name: 'Chats');
 }
